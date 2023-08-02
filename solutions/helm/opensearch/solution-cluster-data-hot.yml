@@ -1,0 +1,99 @@
+---
+clusterName: "opensearch-cluster"
+nodeGroup: "data-hot"
+masterService: "opensearch-cluster-master"
+roles:
+  - data
+
+replicas: 3
+image:
+  repository: "opensearchproject/opensearch"
+  # override image tag, which is .Chart.AppVersion by default
+  tag: "2.9.0"
+  pullPolicy: "IfNotPresent"
+
+opensearchJavaOpts: "-Xmx2048M -Xms2048M"
+
+resources:
+  requests:
+    cpu: "2000m"
+    memory: "4096Mi"
+  limits:
+    cpu: "2000m"
+    memory: "4096Mi"
+
+persistence:
+  enabled: true
+  # Set to false to disable the `fsgroup-volume` initContainer that will update permissions on the persistent disk.
+  enableInitChown: true
+  # override image, which is busybox by default
+  # image: busybox
+  # override image tag, which is latest by default
+  # imageTag:
+  labels:
+    # Add default labels for the volumeClaimTemplate of the StatefulSet
+    enabled: false
+  # OpenSearch Persistent Volume Storage Class
+  # If defined, storageClassName: <storageClass>
+  # If set to "-", storageClassName: "", which disables dynamic provisioning
+  # If undefined (the default) or set to null, no storageClassName spec is
+  #   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  #   GKE, AWS & OpenStack)
+  #
+  # storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 50Gi
+  annotations: {}
+
+protocol: https
+httpPort: 9200
+transportPort: 9300
+metricsPort: 9600
+httpHostPort: ""
+transportHostPort: ""
+
+
+service:
+  labels: {}
+  labelsHeadless: {}
+  headless:
+    annotations: {}
+  type: None
+  # The IP family and IP families options are to set the behaviour in a dual-stack environment
+  # Omitting these values will let the service fall back to whatever the CNI dictates the defaults
+  # should be
+  #
+  # ipFamilyPolicy: SingleStack
+  # ipFamilies:
+  # - IPv4
+  nodePort: ""
+  annotations: {}
+  httpPortName: http
+  transportPortName: transport
+  metricsPortName: metrics
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  externalTrafficPolicy: ""
+
+sysctlVmMaxMapCount: 262144
+
+startupProbe:
+  tcpSocket:
+    port: 9200
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 30
+
+livenessProbe: {}
+
+readinessProbe:
+  tcpSocket:
+    port: 9200
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+sysctlInit:
+  enabled: true
