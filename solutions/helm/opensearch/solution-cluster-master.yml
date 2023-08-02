@@ -17,10 +17,10 @@ opensearchJavaOpts: "-Xmx512M -Xms512M"
 
 resources:
   requests:
-    cpu: "1000m"
+    cpu: "500m"
     memory: "1000Mi"
   limits:
-    cpu: "1000m"
+    cpu: "500m"
     memory: "1000Mi"
 
 persistence:

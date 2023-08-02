@@ -59,7 +59,7 @@ service:
   labelsHeadless: {}
   headless:
     annotations: {}
-  type: None
+  type: ClusterIP
   # The IP family and IP families options are to set the behaviour in a dual-stack environment
   # Omitting these values will let the service fall back to whatever the CNI dictates the defaults
   # should be
